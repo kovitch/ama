@@ -208,8 +208,20 @@
   </footer>
 
   <script>
-    const select = document.getElementById("languageSelect");
+
+    
+    // init: show based on browser language or default Italian
+    const browserLang = (navigator.language || "it").slice(0,2);
+    const defaultLang = ["it","en","uk","fr","ru"].includes(browserLang) ? browserLang : "it";
+
+    const dropdown = document.querySelector(".lang-dropdown");
+    const btn = dropdown.querySelector(".lang-btn");
+    const currentFlag = document.getElementById("currentFlag");
+
     function showLanguage(lang) {
+      btn.innerHTML = document.querySelector('[data-i18-lang="'+lang+'"]').innerHTML; // update button with selected flag + text
+      dropdown.classList.remove("open");
+      
       document.querySelectorAll("[data-lang]").forEach(el => {
         if(el.getAttribute("data-lang") === lang) {
           el.classList.remove('hide');
@@ -220,42 +232,17 @@
         }
       });
     }
-    // init: show based on browser language or default Italian
-    const browserLang = (navigator.language || "it").slice(0,2);
-    const defaultLang = ["it","en","uk","fr","ru"].includes(browserLang) ? browserLang : "it";
-    select.value = defaultLang;
     showLanguage(defaultLang);
   
-    select.addEventListener("change", () => {
-      showLanguage(select.value);
+    btn.addEventListener("click", () => {
+      dropdown.classList.toggle("open");
     });
-
-
-    const dropdown = document.querySelector(".lang-dropdown");
-  const btn = dropdown.querySelector(".lang-btn");
-  const currentFlag = document.getElementById("currentFlag");
-
-  btn.addEventListener("click", () => {
-    dropdown.classList.toggle("open");
-  });
-
-  dropdown.querySelectorAll(".lang-menu li").forEach(item => {
-    item.addEventListener("click", () => {
-      const lang = item.getAttribute("data-i18-lang");
-      btn.innerHTML = item.innerHTML; // update button with selected flag + text
-      dropdown.classList.remove("open");
-
-      // show/hide language content
-      document.querySelectorAll("[data-lang]").forEach(el => {
-        if(el.getAttribute("data-lang") === lang) {
-          el.classList.remove('hide');
-        } else {
-          if(!el.classList.contains('hide')) {
-            el.classList.add('hide');
-          }
-        }
+  
+    dropdown.querySelectorAll(".lang-menu li").forEach(item => {
+      item.addEventListener("click", () => {
+        const lang = item.getAttribute("data-i18-lang");
+        showLanguage(lang);
       });
-    });
   });
 
   // default: Italian
